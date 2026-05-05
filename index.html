@@ -68,6 +68,7 @@ footer{padding:32px 6%;text-align:center;font-size:12px;opacity:.28;border-top:1
 
 /* ═══ THEME: 3D DEPTH ═══ */
 body.t-3d{background:#0e0e14;color:#f0f0f8}
+
 body.t-3d nav.inner{background:rgba(14,14,20,0.7);border-bottom:1px solid rgba(255,255,255,0.05)}
 body.t-3d nav.inner .logo,body.t-3d nav.inner ul a{color:#f0f0f8}
 body.t-3d .hero-tag{background:rgba(120,100,255,0.15);color:#a89aff;border:1px solid rgba(120,100,255,0.3)}
@@ -154,7 +155,7 @@ body.t-dark #dial-toggle{background:#fff;color:#000}
 body.t-dark footer{border-top-color:#111}
 </style>
 </head>
-<body class="t-3d">
+<body class="t-aurora">
 
 <!-- Aurora canvas -->
 <canvas id="aurora-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.5;display:none"></canvas>
@@ -173,11 +174,11 @@ body.t-dark footer{border-top-color:#111}
 <!-- FLOATING DIAL -->
 <div id="theme-dial">
   <div id="dial-menu">
-    <div class="dial-opt active" onclick="setTheme('t-3d',this)" data-swatch="linear-gradient(135deg,#7864ff,#5a4be8)">
+    <div class="dial-opt" onclick="setTheme('t-3d',this)" data-swatch="linear-gradient(135deg,#7864ff,#5a4be8)">
       <span class="dial-label">3D Depth</span>
       <div class="dial-swatch" style="background:linear-gradient(135deg,#7864ff,#5a4be8)"></div>
     </div>
-    <div class="dial-opt" onclick="setTheme('t-aurora',this)" data-swatch="linear-gradient(135deg,#40dcb4,#7b6fff)">
+    <div class="dial-opt active" onclick="setTheme('t-aurora',this)" data-swatch="linear-gradient(135deg,#40dcb4,#7b6fff)">
       <span class="dial-label">Aurora</span>
       <div class="dial-swatch" style="background:linear-gradient(135deg,#40dcb4,#7b6fff)"></div>
     </div>
@@ -361,6 +362,12 @@ body.t-dark footer{border-top-color:#111}
 const themes=['t-3d','t-aurora','t-glass','t-gradient','t-dark'];
 let dialOpen=false;
 let auroraRunning=false;
+let t=0;
+let W,H;
+const canvas=document.getElementById('aurora-canvas');
+const ctx=canvas.getContext('2d');
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+resize();window.addEventListener('resize',resize);
 
 function toggleDial(){
   dialOpen=!dialOpen;
@@ -389,16 +396,14 @@ function setTheme(cls,el){
   document.getElementById('dial-menu').classList.remove('open');
 }
 
-// init
-document.getElementById('aurora-canvas').style.display='none';
+// init — start on aurora
+document.getElementById('aurora-canvas').style.display='block';
 document.getElementById('glass-bg').style.display='none';
+document.getElementById('orbs-3d').style.display='none';
+auroraRunning=true;
+drawAurora();
 
 // Aurora
-const canvas=document.getElementById('aurora-canvas');
-const ctx=canvas.getContext('2d');
-let W,H,t=0;
-function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
-resize();window.addEventListener('resize',resize);
 function drawAurora(){
   if(!document.body.classList.contains('t-aurora')){auroraRunning=false;return;}
   ctx.clearRect(0,0,W,H);
